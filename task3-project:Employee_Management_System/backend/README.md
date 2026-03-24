@@ -32,7 +32,7 @@ Architecture enforcement rules:
 
 Completed Features (grouped by module):
 
-- Users: Database schema and Eloquent model implemented with UUID, role relation, and indexed string status for scalable filtering.
+- Users: Database schema and Eloquent model implemented with UUID, role relation, and indexed string status for scalable filtering. JWT authentication is implemented with register, login, logout, refresh, and me endpoints using Clean Architecture, with enforced JSON-only API behavior and hardened unauthenticated/validation error handling. Register now creates user accounts only and requires a separate login call to issue JWT tokens.
 - Employees: Database schema and Eloquent model implemented with department, salary, leave, and attendance relations; enums replaced by indexed string fields and hire_date indexing added.
 - Departments: Database schema and Eloquent model implemented with manager relation and indexed string status.
 - Salaries: Database schema and Eloquent model implemented with composite index `(employee_id, effective_date)` for historical payroll queries.
@@ -42,9 +42,9 @@ Completed Features (grouped by module):
 
 ### Project Status
 
-- Current status: Database layer optimized to production-grade structure and indexing.
-- Current roadmap position: Database Design and optimization completed in code.
-- Next phase: Phase 1 - Auth + Roles implementation.
+- Current status: JWT authentication system debugged and hardened to production-level behavior (no HTML fallbacks, no auth 500 on API paths), with register flow updated to no-token onboarding and explicit login-based token issuance.
+- Current roadmap position: Phase 1 (Auth + Roles) active and stabilized.
+- Next phase: Complete role-based authorization policies and role-governed user flows.
 
 ### Installation Guide
 
