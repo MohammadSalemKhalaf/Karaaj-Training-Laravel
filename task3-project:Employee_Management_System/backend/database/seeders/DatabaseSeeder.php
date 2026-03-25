@@ -33,14 +33,16 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'role_id' => $adminRole->id,
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'admin',
+            'email' => 'admin@gmail.com',
+            'password' => '12345678',
         ]);
 
         User::factory()->create([
             'role_id' => $employeeRole->id,
             'name' => 'Employee User',
             'email' => 'employee@example.com',
+            'password' => '12345678',
         ]);
     }
 }

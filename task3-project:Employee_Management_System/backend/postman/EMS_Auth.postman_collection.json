@@ -235,6 +235,196 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users?search=&role_id=&status=&page=1&per_page=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "role_id",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "List users with search, role, status filters and pagination. Admin only."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Users fetched successfully.\",\n  \"data\": {\n    \"users\": [\n      {\n        \"id\": \"uuid\",\n        \"name\": \"Jane Employee\",\n        \"email\": \"jane@example.com\",\n        \"status\": \"active\",\n        \"role\": {\n          \"id\": \"uuid\",\n          \"name\": \"employee\"\n        },\n        \"created_at\": \"2026-03-25T00:00:00.000000Z\"\n      }\n    ]\n  },\n  \"meta\": {\n    \"current_page\": 1,\n    \"last_page\": 1,\n    \"per_page\": 10,\n    \"total\": 1\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Show User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Get one user by UUID. Admin only."
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Created User\",\n  \"email\": \"created.user@example.com\",\n  \"password\": \"Qv9#Lm2@Tx7!Az4\",\n  \"password_confirmation\": \"Qv9#Lm2@Tx7!Az4\",\n  \"role_id\": \"{{role_employee_id}}\",\n  \"status\": \"active\"\n}"
+            },
+            "description": "Create a user as admin."
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated User\",\n  \"email\": \"updated.user@example.com\",\n  \"role_id\": \"{{role_employee_id}}\",\n  \"status\": \"inactive\"\n}"
+            },
+            "description": "Update a user. Password is optional."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Delete a user by UUID. Admin cannot delete self."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

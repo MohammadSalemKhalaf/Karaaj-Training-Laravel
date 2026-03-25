@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\User\UserController;
+use App\Http\Middleware\EnsureAdminRole;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function (): void {
@@ -12,4 +14,12 @@ Route::prefix('auth')->group(function (): void {
         Route::post('/refresh', [AuthController::class, 'refresh']);
         Route::get('/me', [AuthController::class, 'me']);
     });
+});
+
+Route::middleware(['auth:api', EnsureAdminRole::class])->prefix('users')->group(function (): void {
+    Route::get('/', [UserController::class, 'index']);
+    Route::get('/{id}', [UserController::class, 'show'])->whereUuid('id');
+    Route::post('/', [UserController::class, 'store']);
+    Route::put('/{id}', [UserController::class, 'update'])->whereUuid('id');
+    Route::delete('/{id}', [UserController::class, 'destroy'])->whereUuid('id');
 });
