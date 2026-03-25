@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\User\AvailableUserResource;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserResource;
@@ -119,5 +120,19 @@ class UserController extends Controller
         $this->userService->deleteUser($user, $authenticatedUser);
 
         return ApiResponse::success('User deleted successfully.');
+    }
+
+    public function availableForEmployee(Request $request): JsonResponse
+    {
+        $users = $this->userService->getAvailableEmployees();
+        $resourceData = AvailableUserResource::collection($users)->resolve($request);
+        $payload = is_array($resourceData) && array_key_exists('data', $resourceData)
+            ? $resourceData['data']
+            : $resourceData;
+
+        return ApiResponse::success(
+            'Available users fetched successfully.',
+            $payload
+        );
     }
 }

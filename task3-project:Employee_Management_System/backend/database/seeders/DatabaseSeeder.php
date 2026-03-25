@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(DepartmentSeeder::class);
+
         $adminRole = Role::query()->firstOrCreate(
             ['name' => 'admin'],
             ['description' => 'Platform administrator role.']

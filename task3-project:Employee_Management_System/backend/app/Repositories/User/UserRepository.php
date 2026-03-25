@@ -3,6 +3,7 @@
 namespace App\Repositories\User;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class UserRepository
@@ -61,5 +62,17 @@ class UserRepository
     public function delete(User $user): void
     {
         $user->delete();
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getAvailableForEmployee(): Collection
+    {
+        return User::query()
+            ->whereHas('role', fn ($query) => $query->where('name', 'employee'))
+            ->whereDoesntHave('employee')
+            ->orderBy('name')
+            ->get(['id', 'name', 'email']);
     }
 }

@@ -240,6 +240,43 @@
       "name": "Users",
       "item": [
         {
+          "name": "Available Users For Employee",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/available-for-employee",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "available-for-employee"
+              ]
+            },
+            "description": "Returns users with employee role that are not assigned to employees table."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Available users fetched successfully.\",\n  \"data\": [\n    {\n      \"id\": \"uuid\",\n      \"name\": \"Employee User\",\n      \"email\": \"employee@example.com\"\n    }\n  ],\n  \"meta\": {}\n}"
+            }
+          ]
+        },
+        {
           "name": "List Users",
           "request": {
             "method": "GET",
@@ -421,6 +458,200 @@
               ]
             },
             "description": "Delete a user by UUID. Admin cannot delete self."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Employees",
+      "item": [
+        {
+          "name": "List Employees",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/employees?search=&department_id=&status=&employment_type=&page=1&per_page=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "employees"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "department_id",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "employment_type",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "List employees with filtering and pagination. Admin and manager only."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Employees fetched successfully.\",\n  \"data\": {\n    \"employees\": [\n      {\n        \"id\": \"uuid\",\n        \"employee_code\": \"EMP-1001\",\n        \"full_name\": \"Jane Doe\",\n        \"email\": \"jane.doe@company.test\",\n        \"phone_number\": \"+201000000001\",\n        \"job_title\": \"Software Engineer\",\n        \"employment_type\": \"full_time\",\n        \"status\": \"active\",\n        \"department\": {\n          \"id\": \"uuid\",\n          \"name\": \"Engineering\"\n        },\n        \"user\": {\n          \"id\": \"uuid\",\n          \"email\": \"employee@example.com\"\n        },\n        \"hire_date\": \"2026-01-01\"\n      }\n    ]\n  },\n  \"meta\": {\n    \"current_page\": 1,\n    \"last_page\": 1,\n    \"per_page\": 10,\n    \"total\": 1\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Show Employee",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/employees/{{employee_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "employees",
+                "{{employee_id}}"
+              ]
+            },
+            "description": "Show one employee."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Employee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/employees",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "employees"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"department_id\": \"{{department_id}}\",\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Doe\",\n  \"email\": \"jane.doe@company.test\",\n  \"phone_number\": \"+201000000001\",\n  \"hire_date\": \"2026-01-01\",\n  \"job_title\": \"Software Engineer\",\n  \"employment_type\": \"full_time\",\n  \"status\": \"active\"\n}"
+            },
+            "description": "Create an employee."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Employee",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/employees/{{employee_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "employees",
+                "{{employee_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"department_id\": \"{{department_id}}\",\n  \"employee_code\": \"EMP-1001\",\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Doe\",\n  \"email\": \"jane.updated@company.test\",\n  \"phone_number\": \"+201000000001\",\n  \"hire_date\": \"2026-01-01\",\n  \"job_title\": \"Senior Engineer\",\n  \"employment_type\": \"contract\",\n  \"status\": \"inactive\"\n}"
+            },
+            "description": "Update an employee."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Employee",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/employees/{{employee_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "employees",
+                "{{employee_id}}"
+              ]
+            },
+            "description": "Delete an employee."
           },
           "response": []
         }

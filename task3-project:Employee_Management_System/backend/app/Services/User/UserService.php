@@ -5,6 +5,7 @@ namespace App\Services\User;
 use App\Models\Role;
 use App\Models\User;
 use App\Repositories\User\UserRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -70,6 +71,14 @@ class UserService
         }
 
         $this->userRepository->delete($targetUser);
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getAvailableEmployees(): Collection
+    {
+        return $this->userRepository->getAvailableForEmployee();
     }
 
     private function ensureRoleExists(string $roleId): void
