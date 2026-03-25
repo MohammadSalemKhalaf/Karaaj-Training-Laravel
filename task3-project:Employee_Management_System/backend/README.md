@@ -34,7 +34,7 @@ Completed Features (grouped by module):
 
 - Users: Database schema and Eloquent model implemented with UUID, role relation, and indexed string status for scalable filtering. JWT authentication is implemented with register, login, logout, refresh, and me endpoints using Clean Architecture, with enforced JSON-only API behavior and hardened unauthenticated/validation error handling. Register now creates user accounts only and requires a separate login call to issue JWT tokens. Production-grade User Management module is completed with admin-only CRUD, FormRequest validation, repository/service layering, role/status/email constraints, self-delete prevention, and filtered pagination.
 - Employees: Database schema and Eloquent model implemented with department, salary, leave, and attendance relations; enums replaced by indexed string fields and hire_date indexing added. Production-grade Employees module is completed with admin/manager access control, full CRUD, FormRequest validation, repository/service layering, user-assignment constraints, auto-generated incremental employee codes, and filtered pagination.
-- Departments: Database schema and Eloquent model implemented with manager relation and indexed string status.
+- Departments: Database schema and Eloquent model implemented with manager relation and indexed string status. Production-grade Departments module is implemented with admin/manager access control, full CRUD, manager-role validation, duplicate-code protection, paginated search/status filtering, and department show responses including employee lists.
 - Salaries: Database schema and Eloquent model implemented with composite index `(employee_id, effective_date)` for historical payroll queries.
 - Leaves: leave_requests schema and LeaveRequest model implemented with approver relation, indexed string status, and date-range indexing.
 - Attendance: attendance_records schema and AttendanceRecord model implemented with timestamp check-in/check-out and unique `(employee_id, attendance_date)` constraint.
@@ -42,9 +42,9 @@ Completed Features (grouped by module):
 
 ### Project Status
 
-- Current status: Employee creation flow upgraded with seeded core departments and dynamic available-user selection endpoint for assigning only eligible employee-role accounts.
-- Current roadmap position: Phase 3 (Employees + Departments) active with Employees flow hardened for production.
-- Next phase: Complete Departments management workflows and integrate cross-module business rules.
+- Current status: Departments module implemented at production level with manager assignment rules and integrated employee listing per department.
+- Current roadmap position: Phase 3 (Employees + Departments) completed.
+- Next phase: Phase 4 implementation for Salary + Leaves + Attendance modules.
 
 ### Installation Guide
 

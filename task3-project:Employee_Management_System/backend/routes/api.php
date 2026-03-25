@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Department\DepartmentController;
 use App\Http\Controllers\Api\Employee\EmployeeController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Middleware\EnsureAdminRole;
@@ -35,4 +36,12 @@ Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])->prefix('employ
     Route::post('/', [EmployeeController::class, 'store']);
     Route::put('/{id}', [EmployeeController::class, 'update'])->whereUuid('id');
     Route::delete('/{id}', [EmployeeController::class, 'destroy'])->whereUuid('id');
+});
+
+Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])->prefix('departments')->group(function (): void {
+    Route::get('/', [DepartmentController::class, 'index']);
+    Route::get('/{id}', [DepartmentController::class, 'show'])->whereUuid('id');
+    Route::post('/', [DepartmentController::class, 'store']);
+    Route::put('/{id}', [DepartmentController::class, 'update'])->whereUuid('id');
+    Route::delete('/{id}', [DepartmentController::class, 'destroy'])->whereUuid('id');
 });
