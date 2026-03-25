@@ -35,16 +35,16 @@ Completed Features (grouped by module):
 - Users: Database schema and Eloquent model implemented with UUID, role relation, and indexed string status for scalable filtering. JWT authentication is implemented with register, login, logout, refresh, and me endpoints using Clean Architecture, with enforced JSON-only API behavior and hardened unauthenticated/validation error handling. Register now creates user accounts only and requires a separate login call to issue JWT tokens. Production-grade User Management module is completed with admin-only CRUD, FormRequest validation, repository/service layering, role/status/email constraints, self-delete prevention, and filtered pagination.
 - Employees: Database schema and Eloquent model implemented with department, salary, leave, and attendance relations; enums replaced by indexed string fields and hire_date indexing added. Production-grade Employees module is completed with admin/manager access control, full CRUD, FormRequest validation, repository/service layering, user-assignment constraints, auto-generated incremental employee codes, and filtered pagination.
 - Departments: Database schema and Eloquent model implemented with manager relation and indexed string status. Production-grade Departments module is implemented with admin/manager access control, full CRUD, manager-role validation, duplicate-code protection, paginated search/status filtering, and department show responses including employee lists.
-- Salaries: Database schema and Eloquent model implemented with composite index `(employee_id, effective_date)` for historical payroll queries.
+- Salaries: Database schema and Eloquent model implemented with composite index `(employee_id, effective_date)` for historical payroll queries. Production-grade Salary module is implemented with admin/manager access control, full CRUD, server-side net salary calculation (`amount + bonuses - deductions`), non-negative payroll validation, employee salary history endpoint, and filtered pagination by employee/date range.
 - Leaves: leave_requests schema and LeaveRequest model implemented with approver relation, indexed string status, and date-range indexing.
 - Attendance: attendance_records schema and AttendanceRecord model implemented with timestamp check-in/check-out and unique `(employee_id, attendance_date)` constraint.
 - Reporting and Analytics: Pending.
 
 ### Project Status
 
-- Current status: Departments module implemented at production level with manager assignment rules and integrated employee listing per department.
-- Current roadmap position: Phase 3 (Employees + Departments) completed.
-- Next phase: Phase 4 implementation for Salary + Leaves + Attendance modules.
+- Current status: Salary module implemented at production level with secure payroll CRUD, salary history tracking, and net salary business-rule enforcement.
+- Current roadmap position: Phase 4 partially completed (Salary done; Leaves + Attendance remaining).
+- Next phase: Complete Leaves and Attendance modules under Phase 4.
 
 ### Installation Guide
 
@@ -111,7 +111,7 @@ Roadmap-aligned future implementation plan:
 - Phase 1: Auth + Roles
 - Phase 2: Users
 - Phase 3: Employees + Departments
-- Phase 4: Salary + Leaves + Attendance
+- Phase 4: Salary + Leaves + Attendance (Salary completed)
 - Phase 5: Reports + Analytics
 - Phase 6: Optimization + Caching
 

@@ -848,6 +848,231 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Salaries",
+      "item": [
+        {
+          "name": "List Salaries",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/salaries?employee_id=&from_date=&to_date=&page=1&per_page=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "salaries"
+              ],
+              "query": [
+                {
+                  "key": "employee_id",
+                  "value": ""
+                },
+                {
+                  "key": "from_date",
+                  "value": ""
+                },
+                {
+                  "key": "to_date",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "List salary records with employee/date filtering and pagination."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Salaries fetched successfully.\",\n  \"data\": {\n    \"salaries\": [\n      {\n        \"id\": \"uuid\",\n        \"employee\": {\n          \"id\": \"uuid\",\n          \"name\": \"Jane Doe\"\n        },\n        \"amount\": \"1000.00\",\n        \"bonuses\": \"200.00\",\n        \"deductions\": \"50.00\",\n        \"net_salary\": \"1150.00\",\n        \"effective_date\": \"2026-02-01\",\n        \"created_at\": \"2026-03-25T00:00:00.000000Z\"\n      }\n    ]\n  },\n  \"meta\": {\n    \"current_page\": 1,\n    \"last_page\": 1,\n    \"per_page\": 10,\n    \"total\": 1\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Show Salary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/salaries/{{salary_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "salaries",
+                "{{salary_id}}"
+              ]
+            },
+            "description": "Get salary record by UUID."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Salary",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/salaries",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "salaries"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employee_id\": \"{{employee_id}}\",\n  \"amount\": 1000,\n  \"bonuses\": 200,\n  \"deductions\": 50,\n  \"effective_date\": \"2026-02-01\",\n  \"notes\": \"Monthly adjustment\"\n}"
+            },
+            "description": "Create salary record. net_salary is calculated on backend."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Salary",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/salaries/{{salary_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "salaries",
+                "{{salary_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employee_id\": \"{{employee_id}}\",\n  \"amount\": 1200,\n  \"bonuses\": 100,\n  \"deductions\": 20,\n  \"effective_date\": \"2026-03-01\",\n  \"notes\": \"Updated package\"\n}"
+            },
+            "description": "Update salary record."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Salary",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/salaries/{{salary_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "salaries",
+                "{{salary_id}}"
+              ]
+            },
+            "description": "Delete salary record."
+          },
+          "response": []
+        },
+        {
+          "name": "Employee Salary History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/employees/{{employee_id}}/salaries?per_page=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "employees",
+                "{{employee_id}}",
+                "salaries"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get salary history for a specific employee (latest first)."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

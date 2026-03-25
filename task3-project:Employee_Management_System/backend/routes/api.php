@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Department\DepartmentController;
 use App\Http\Controllers\Api\Employee\EmployeeController;
+use App\Http\Controllers\Api\Salary\SalaryController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Middleware\EnsureAdminRole;
 use App\Http\Middleware\EnsureAdminOrManagerRole;
@@ -45,3 +46,15 @@ Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])->prefix('depart
     Route::put('/{id}', [DepartmentController::class, 'update'])->whereUuid('id');
     Route::delete('/{id}', [DepartmentController::class, 'destroy'])->whereUuid('id');
 });
+
+Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])->prefix('salaries')->group(function (): void {
+    Route::get('/', [SalaryController::class, 'index']);
+    Route::get('/{id}', [SalaryController::class, 'show'])->whereUuid('id');
+    Route::post('/', [SalaryController::class, 'store']);
+    Route::put('/{id}', [SalaryController::class, 'update'])->whereUuid('id');
+    Route::delete('/{id}', [SalaryController::class, 'destroy'])->whereUuid('id');
+});
+
+Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])
+    ->get('/employees/{id}/salaries', [SalaryController::class, 'employeeSalaries'])
+    ->whereUuid('id');
