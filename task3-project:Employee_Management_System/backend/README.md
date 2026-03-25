@@ -36,15 +36,15 @@ Completed Features (grouped by module):
 - Employees: Database schema and Eloquent model implemented with department, salary, leave, and attendance relations; enums replaced by indexed string fields and hire_date indexing added. Production-grade Employees module is completed with admin/manager access control, full CRUD, FormRequest validation, repository/service layering, user-assignment constraints, auto-generated incremental employee codes, and filtered pagination.
 - Departments: Database schema and Eloquent model implemented with manager relation and indexed string status. Production-grade Departments module is implemented with admin/manager access control, full CRUD, manager-role validation, duplicate-code protection, paginated search/status filtering, and department show responses including employee lists.
 - Salaries: Database schema and Eloquent model implemented with composite index `(employee_id, effective_date)` for historical payroll queries. Production-grade Salary module is implemented with admin/manager access control, full CRUD, server-side net salary calculation (`amount + bonuses - deductions`), non-negative payroll validation, employee salary history endpoint, and filtered pagination by employee/date range.
-- Leaves: leave_requests schema and LeaveRequest model implemented with approver relation, indexed string status, and date-range indexing.
+- Leaves: leave_requests schema and LeaveRequest model implemented with approver relation, indexed string status, and date-range indexing. Production-grade Leave Management module is implemented with clean status flow (`pending`, `approved`, `rejected`, `cancelled`), employee-only apply/update/cancel, manager/admin-only approve/reject, overlap prevention for active periods, and filtered pagination.
 - Attendance: attendance_records schema and AttendanceRecord model implemented with timestamp check-in/check-out and unique `(employee_id, attendance_date)` constraint.
 - Reporting and Analytics: Pending.
 
 ### Project Status
 
-- Current status: Salary module implemented at production level with secure payroll CRUD, salary history tracking, and net salary business-rule enforcement.
-- Current roadmap position: Phase 4 partially completed (Salary done; Leaves + Attendance remaining).
-- Next phase: Complete Leaves and Attendance modules under Phase 4.
+- Current status: Leave module implemented at production level with approval workflow, transition guards, and overlap validation.
+- Current roadmap position: Phase 4 partially completed (Salary + Leaves done; Attendance remaining).
+- Next phase: Complete Attendance module under Phase 4.
 
 ### Installation Guide
 
@@ -111,7 +111,7 @@ Roadmap-aligned future implementation plan:
 - Phase 1: Auth + Roles
 - Phase 2: Users
 - Phase 3: Employees + Departments
-- Phase 4: Salary + Leaves + Attendance (Salary completed)
+- Phase 4: Salary + Leaves + Attendance (Salary + Leaves completed)
 - Phase 5: Reports + Analytics
 - Phase 6: Optimization + Caching
 

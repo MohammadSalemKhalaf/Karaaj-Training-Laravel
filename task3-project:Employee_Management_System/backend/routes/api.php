@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Department\DepartmentController;
 use App\Http\Controllers\Api\Employee\EmployeeController;
+use App\Http\Controllers\Api\Leave\LeaveController;
 use App\Http\Controllers\Api\Salary\SalaryController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Middleware\EnsureAdminRole;
@@ -58,3 +59,13 @@ Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])->prefix('salari
 Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])
     ->get('/employees/{id}/salaries', [SalaryController::class, 'employeeSalaries'])
     ->whereUuid('id');
+
+Route::middleware('auth:api')->prefix('leaves')->group(function (): void {
+    Route::get('/', [LeaveController::class, 'index']);
+    Route::post('/', [LeaveController::class, 'store']);
+    Route::get('/{id}', [LeaveController::class, 'show'])->whereUuid('id');
+    Route::put('/{id}', [LeaveController::class, 'update'])->whereUuid('id');
+    Route::delete('/{id}', [LeaveController::class, 'destroy'])->whereUuid('id');
+    Route::post('/{id}/approve', [LeaveController::class, 'approve'])->whereUuid('id');
+    Route::post('/{id}/reject', [LeaveController::class, 'reject'])->whereUuid('id');
+});
