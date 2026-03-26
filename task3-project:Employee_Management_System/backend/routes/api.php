@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Attendance\AttendanceController;
 use App\Http\Controllers\Api\Department\DepartmentController;
 use App\Http\Controllers\Api\Employee\EmployeeController;
 use App\Http\Controllers\Api\Leave\LeaveController;
+use App\Http\Controllers\Api\Report\ReportController;
 use App\Http\Controllers\Api\Salary\SalaryController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Middleware\EnsureAdminRole;
@@ -81,3 +82,12 @@ Route::middleware('auth:api')->prefix('attendance')->group(function (): void {
 Route::middleware('auth:api')
     ->get('/employees/{id}/attendance', [AttendanceController::class, 'employeeAttendance'])
     ->whereUuid('id');
+
+Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])->prefix('reports')->group(function (): void {
+    Route::get('/employees/summary', [ReportController::class, 'employeeSummary']);
+    Route::get('/departments/distribution', [ReportController::class, 'departmentDistribution']);
+    Route::get('/attendance/summary', [ReportController::class, 'attendanceSummary']);
+    Route::get('/salaries/distribution', [ReportController::class, 'salaryDistribution']);
+    Route::get('/leaves/statistics', [ReportController::class, 'leaveStatistics']);
+    Route::get('/dashboard/overview', [ReportController::class, 'dashboardOverview']);
+});

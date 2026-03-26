@@ -1509,6 +1509,248 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Reports & Analytics",
+      "item": [
+        {
+          "name": "Employee Summary Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/employees/summary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reports",
+                "employees",
+                "summary"
+              ]
+            },
+            "description": "Employee summary report (admin/manager only)."
+          },
+          "response": []
+        },
+        {
+          "name": "Department Distribution Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/departments/distribution",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reports",
+                "departments",
+                "distribution"
+              ]
+            },
+            "description": "Department distribution report with manager info and employee counts."
+          },
+          "response": []
+        },
+        {
+          "name": "Attendance Summary Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/attendance/summary?date_from=2026-03-01&date_to=2026-03-31&employee_id={{employee_id}}&department_id={{department_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reports",
+                "attendance",
+                "summary"
+              ],
+              "query": [
+                {
+                  "key": "date_from",
+                  "value": "2026-03-01"
+                },
+                {
+                  "key": "date_to",
+                  "value": "2026-03-31"
+                },
+                {
+                  "key": "employee_id",
+                  "value": "{{employee_id}}"
+                },
+                {
+                  "key": "department_id",
+                  "value": "{{department_id}}"
+                }
+              ]
+            },
+            "description": "Attendance summary with date/employee/department filters."
+          },
+          "response": []
+        },
+        {
+          "name": "Salary Distribution Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/salaries/distribution?date_from=2026-03-01&date_to=2026-03-31&employee_id={{employee_id}}&department_id={{department_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reports",
+                "salaries",
+                "distribution"
+              ],
+              "query": [
+                {
+                  "key": "date_from",
+                  "value": "2026-03-01"
+                },
+                {
+                  "key": "date_to",
+                  "value": "2026-03-31"
+                },
+                {
+                  "key": "employee_id",
+                  "value": "{{employee_id}}"
+                },
+                {
+                  "key": "department_id",
+                  "value": "{{department_id}}"
+                }
+              ]
+            },
+            "description": "Salary distribution metrics with aggregate payroll values."
+          },
+          "response": []
+        },
+        {
+          "name": "Leave Statistics Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/leaves/statistics?date_from=2026-03-01&date_to=2026-03-31&employee_id={{employee_id}}&department_id={{department_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reports",
+                "leaves",
+                "statistics"
+              ],
+              "query": [
+                {
+                  "key": "date_from",
+                  "value": "2026-03-01"
+                },
+                {
+                  "key": "date_to",
+                  "value": "2026-03-31"
+                },
+                {
+                  "key": "employee_id",
+                  "value": "{{employee_id}}"
+                },
+                {
+                  "key": "department_id",
+                  "value": "{{department_id}}"
+                }
+              ]
+            },
+            "description": "Leave statistics report with status breakdown and average leave duration."
+          },
+          "response": []
+        },
+        {
+          "name": "Dashboard Overview Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/dashboard/overview",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reports",
+                "dashboard",
+                "overview"
+              ]
+            },
+            "description": "Dashboard-level overview KPIs and latest entities."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Dashboard overview report fetched successfully.\",\n  \"data\": {\n    \"total_users\": 20,\n    \"total_employees\": 15,\n    \"total_departments\": 4,\n    \"total_pending_leaves\": 3,\n    \"today_attendance_count\": 12,\n    \"latest_leave_requests\": [],\n    \"latest_employees\": []\n  },\n  \"meta\": {\n    \"filters\": {},\n    \"generated_at\": \"2026-03-26T10:00:00+00:00\"\n  }\n}"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
