@@ -37,14 +37,14 @@ Completed Features (grouped by module):
 - Departments: Database schema and Eloquent model implemented with manager relation and indexed string status. Production-grade Departments module is implemented with admin/manager access control, full CRUD, manager-role validation, duplicate-code protection, paginated search/status filtering, and department show responses including employee lists.
 - Salaries: Database schema and Eloquent model implemented with composite index `(employee_id, effective_date)` for historical payroll queries. Production-grade Salary module is implemented with admin/manager access control, full CRUD, server-side net salary calculation (`amount + bonuses - deductions`), non-negative payroll validation, employee salary history endpoint, and filtered pagination by employee/date range.
 - Leaves: leave_requests schema and LeaveRequest model implemented with approver relation, indexed string status, and date-range indexing. Production-grade Leave Management module is implemented with clean status flow (`pending`, `approved`, `rejected`, `cancelled`), employee-only apply/update/cancel, manager/admin-only approve/reject, overlap prevention for active periods, and filtered pagination.
-- Attendance: attendance_records schema and AttendanceRecord model implemented with timestamp check-in/check-out and unique `(employee_id, attendance_date)` constraint.
+- Attendance: attendance_records schema and AttendanceRecord model implemented with timestamp check-in/check-out and unique `(employee_id, attendance_date)` constraint. Production-grade Attendance module is implemented with employee check-in/check-out endpoints, one-record-per-day duplicate prevention, auto date/time and initial status assignment, check-out precondition validation, and manager/admin attendance visibility with employee history and pagination.
 - Reporting and Analytics: Pending.
 
 ### Project Status
 
-- Current status: Leave module implemented at production level with approval workflow, transition guards, and overlap validation.
-- Current roadmap position: Phase 4 partially completed (Salary + Leaves done; Attendance remaining).
-- Next phase: Complete Attendance module under Phase 4.
+- Current status: Attendance module implemented at production level with secure check-in/check-out flow and attendance visibility controls.
+- Current roadmap position: Phase 4 completed (Salary + Leaves + Attendance done).
+- Next phase: Start Phase 5 for Reports + Analytics.
 
 ### Installation Guide
 
@@ -111,7 +111,7 @@ Roadmap-aligned future implementation plan:
 - Phase 1: Auth + Roles
 - Phase 2: Users
 - Phase 3: Employees + Departments
-- Phase 4: Salary + Leaves + Attendance (Salary + Leaves completed)
+- Phase 4: Salary + Leaves + Attendance (Completed)
 - Phase 5: Reports + Analytics
 - Phase 6: Optimization + Caching
 

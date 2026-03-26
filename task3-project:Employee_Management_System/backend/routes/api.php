@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Attendance\AttendanceController;
 use App\Http\Controllers\Api\Department\DepartmentController;
 use App\Http\Controllers\Api\Employee\EmployeeController;
 use App\Http\Controllers\Api\Leave\LeaveController;
@@ -69,3 +70,14 @@ Route::middleware('auth:api')->prefix('leaves')->group(function (): void {
     Route::post('/{id}/approve', [LeaveController::class, 'approve'])->whereUuid('id');
     Route::post('/{id}/reject', [LeaveController::class, 'reject'])->whereUuid('id');
 });
+
+Route::middleware('auth:api')->prefix('attendance')->group(function (): void {
+    Route::post('/check-in', [AttendanceController::class, 'checkIn']);
+    Route::post('/check-out', [AttendanceController::class, 'checkOut']);
+    Route::get('/', [AttendanceController::class, 'index']);
+    Route::get('/{id}', [AttendanceController::class, 'show'])->whereUuid('id');
+});
+
+Route::middleware('auth:api')
+    ->get('/employees/{id}/attendance', [AttendanceController::class, 'employeeAttendance'])
+    ->whereUuid('id');
