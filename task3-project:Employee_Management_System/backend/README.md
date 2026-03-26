@@ -2,9 +2,20 @@
 
 ### Project Overview
 
-Employee Management System (EMS) is a Laravel RESTful API built to centralize workforce operations across users, employees, departments, salaries, leaves, attendance, and reporting.
+Employee Management System (EMS) is a production-grade modular backend built with Laravel using Clean Architecture principles.
 
-The system solves common operational issues such as fragmented HR data, inconsistent approval flows, and poor visibility into employee and department-level activity.
+EMS is designed to simulate real-world enterprise HR systems with a secure and scalable API foundation.
+
+Core capabilities include:
+
+- Authentication and Authorization (JWT)
+- User and Role Management
+- Employee Lifecycle Management
+- Department Management
+- Salary Processing
+- Leave Workflow Management
+- Attendance Tracking
+- Reports and Analytics (DB-optimized)
 
 ### Tech Stack
 
@@ -14,13 +25,21 @@ The system solves common operational issues such as fragmented HR data, inconsis
 
 ### Architecture
 
-EMS follows a Modular Monolith with Clean Architecture principles.
+EMS follows a Modular Monolith with strict Clean Architecture boundaries.
 
 Mandatory request flow:
 
 `Controller -> Service -> Repository -> Model`
 
-Architecture enforcement rules:
+Layer responsibilities:
+
+- Controller: request validation handoff and standardized API response only.
+- Service: business rules, workflow orchestration, and transition policies.
+- Repository: database access and aggregate query composition.
+- Model: Eloquent entities and relationship mapping.
+- Resource: API output shaping and response payload consistency.
+
+Architecture guardrails:
 
 - Controllers handle request/response only.
 - Business logic belongs in Services.
