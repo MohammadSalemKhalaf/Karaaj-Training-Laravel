@@ -1,143 +1,108 @@
-## Employee Management System (EMS)
+# Employee Management System (EMS) API
 
-### Project Overview
+## Overview
+Employee Management System (EMS) is a backend API built to support day-to-day HR operations in organizations of different sizes.
 
-Employee Management System (EMS) is a production-grade modular backend built with Laravel using Clean Architecture principles.
+It centralizes employee records, department structures, payroll history, leave workflows, attendance tracking, and operational reporting in a single system.
 
-EMS is designed to simulate real-world enterprise HR systems with a secure and scalable API foundation.
+The project exists to provide a stable foundation for HR products that need clear business rules, predictable API contracts, and maintainable code over time.
 
-Core capabilities include:
+Typical use cases include internal admin dashboards, manager workspaces, and employee self-service portals.
 
-- Authentication and Authorization (JWT)
-- User and Role Management
-- Employee Lifecycle Management
-- Department Management
-- Salary Processing
-- Leave Workflow Management
-- Attendance Tracking
-- Reports and Analytics (DB-optimized)
+## Architecture
+The codebase follows a strict Clean Architecture flow:
 
-### Tech Stack
-
-- Laravel
-- MySQL
-- JWT Authentication (`tymon/jwt-auth`)
-
-### Architecture
-
-EMS follows a Modular Monolith with strict Clean Architecture boundaries.
-
-Mandatory request flow:
-
-`Controller -> Service -> Repository -> Model`
+Controller -> Service -> Repository -> Model -> Resource
 
 Layer responsibilities:
+- Controller: Handles HTTP concerns only (requests, responses, authorization boundaries).
+- Service: Implements business rules and use-case workflows.
+- Repository: Encapsulates database access and query composition.
+- Model: Defines persistence structure, casts, and relationships.
+- Resource: Shapes API output into consistent response payloads.
 
-- Controller: request validation handoff and standardized API response only.
-- Service: business rules, workflow orchestration, and transition policies.
-- Repository: database access and aggregate query composition.
-- Model: Eloquent entities and relationship mapping.
-- Resource: API output shaping and response payload consistency.
+This structure keeps business logic out of controllers, prevents data-access leakage, and makes the system easier to test and extend.
 
-Architecture guardrails:
+## Features
 
-- Controllers handle request/response only.
-- Business logic belongs in Services.
-- Database access belongs in Repositories.
-- API output must use Resources.
-- Raw Eloquent models must not be returned from API endpoints.
+### Authentication
+- JWT-based authentication with register, login, logout, refresh, and current-user endpoints.
+- Stateless token flow suitable for SPA and mobile clients.
 
-### Features
+### Users
+- Admin-oriented user management with role assignment and account status handling.
+- Paginated listing with database-level filtering.
 
-Completed Features (grouped by module):
+### Employees
+- Employee profile lifecycle management linked to departments and system users.
+- Automatic employee code generation and assignment validations.
 
-- Users: Database schema and Eloquent model implemented with UUID, role relation, and indexed string status for scalable filtering. JWT authentication is implemented with register, login, logout, refresh, and me endpoints using Clean Architecture, with enforced JSON-only API behavior and hardened unauthenticated/validation error handling. Register now creates user accounts only and requires a separate login call to issue JWT tokens. Production-grade User Management module is completed with admin-only CRUD, FormRequest validation, repository/service layering, role/status/email constraints, self-delete prevention, and filtered pagination.
-- Employees: Database schema and Eloquent model implemented with department, salary, leave, and attendance relations; enums replaced by indexed string fields and hire_date indexing added. Production-grade Employees module is completed with admin/manager access control, full CRUD, FormRequest validation, repository/service layering, user-assignment constraints, auto-generated incremental employee codes, and filtered pagination.
-- Departments: Database schema and Eloquent model implemented with manager relation and indexed string status. Production-grade Departments module is implemented with admin/manager access control, full CRUD, manager-role validation, duplicate-code protection, paginated search/status filtering, and department show responses including employee lists.
-- Salaries: Database schema and Eloquent model implemented with composite index `(employee_id, effective_date)` for historical payroll queries. Production-grade Salary module is implemented with admin/manager access control, full CRUD, server-side net salary calculation (`amount + bonuses - deductions`), non-negative payroll validation, employee salary history endpoint, and filtered pagination by employee/date range.
-- Leaves: leave_requests schema and LeaveRequest model implemented with approver relation, indexed string status, and date-range indexing. Production-grade Leave Management module is implemented with clean status flow (`pending`, `approved`, `rejected`, `cancelled`), employee-only apply/update/cancel, manager/admin-only approve/reject, overlap prevention for active periods, and filtered pagination.
-- Attendance: attendance_records schema and AttendanceRecord model implemented with timestamp check-in/check-out and unique `(employee_id, attendance_date)` constraint. Production-grade Attendance module is implemented with employee check-in/check-out endpoints, one-record-per-day duplicate prevention, auto date/time and initial status assignment, check-out precondition validation, and manager/admin attendance visibility with employee history and pagination.
-- Reporting and Analytics: Production-grade Reports & Analytics module is implemented with admin/manager-only read endpoints for employee summary, department distribution, attendance summary, salary distribution, leave statistics, and dashboard overview; all analytics rely on SQL-level aggregation with validated filters and standardized report metadata.
+### Departments
+- Department CRUD with manager linkage and employee counts.
+- Query-friendly listing and detail retrieval.
 
-### Project Status
+### Salaries
+- Salary record management with amount, bonuses, deductions, and computed net salary.
+- Historical salary retrieval by employee and date range.
 
-- Current status: Reports & Analytics module implemented at production level with optimized aggregate endpoints and secure access control.
-- Current roadmap position: Phase 5 completed (Reports + Analytics done).
-- Next phase: Start Phase 6 for Optimization + Caching.
+### Leaves
+- Leave application and approval lifecycle (pending, approved, rejected, cancelled).
+- Overlap prevention for active leave windows.
 
-### Installation Guide
+### Attendance
+- Daily check-in and check-out workflows with status tracking.
+- Employee-level attendance history and filtered reporting.
 
-1. Clone the repository.
+### Reports
+- Operational summaries for workforce, departments, attendance, salary distribution, and leaves.
+- Dashboard-oriented aggregates built through database queries.
+
+## Key Strengths
+- Separation of concerns: each layer has a single, clear responsibility.
+- Scalability: modular structure supports feature growth without controller bloat.
+- Optimized queries: filtering, grouping, and pagination are handled at database level.
+- Reliable business logic: domain rules are centralized in service classes.
+- Structured responses: endpoints return a unified and predictable API envelope.
+
+## API Design
+All endpoints follow a consistent response contract.
+
+Success response:
+
+```json
+{
+  "success": true,
+  "message": "string",
+  "data": {},
+  "meta": {}
+}
+```
+
+Error response:
+
+```json
+{
+  "success": false,
+  "message": "string",
+  "errors": {},
+  "code": "ERROR_CODE"
+}
+```
+
+This consistency simplifies frontend integration, improves client-side error handling, and keeps API behavior predictable across modules.
+
+## Setup & Installation
 
 ```bash
 git clone <repository-url>
 cd task3-project:Employee_Management_System/backend
-```
-
-2. Install PHP dependencies.
-
-```bash
 composer install
-```
-
-3. Set up environment variables.
-
-```bash
 cp .env.example .env
 php artisan key:generate
-```
-
-4. Configure database credentials in `.env`, then run migrations.
-
-```bash
-php artisan migrate
-```
-
-5. Start the development server.
-
-```bash
+php artisan migrate --seed
 php artisan serve
 ```
 
-### API Structure
-
-Standard success response format:
-
-```json
-{
-	"success": true,
-	"message": "",
-	"data": {},
-	"meta": {}
-}
-```
-
-Standard error response format:
-
-```json
-{
-	"success": false,
-	"message": "",
-	"errors": {},
-	"code": "ERROR_CODE"
-}
-```
-
-### Future Work
-
-Roadmap-aligned future implementation plan:
-
-- Phase 1: Auth + Roles
-- Phase 2: Users
-- Phase 3: Employees + Departments
-- Phase 4: Salary + Leaves + Attendance (Completed)
-- Phase 5: Reports + Analytics (Completed)
-- Phase 6: Optimization + Caching
-
-### README Update Rule
-
-For each completed feature:
-
-- Append the feature under the appropriate module in the Features section.
-- Update the Project Status section to reflect current progress/phase.
-- Do not rewrite the entire README; keep updates incremental and readable.
+## Notes
+- This project is a backend API and does not include a production frontend.
+- The API is ready to be integrated with web, mobile, or admin panel clients.

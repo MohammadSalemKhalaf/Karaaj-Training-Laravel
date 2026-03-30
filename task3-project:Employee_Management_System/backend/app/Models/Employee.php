@@ -33,6 +33,10 @@ class Employee extends Model
         'status',
     ];
 
+    protected $appends = [
+        'full_name',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -64,5 +68,10 @@ class Employee extends Model
             'hire_date' => 'date',
             'date_of_birth' => 'date',
         ];
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return trim((string) ($this->first_name.' '.$this->last_name));
     }
 }

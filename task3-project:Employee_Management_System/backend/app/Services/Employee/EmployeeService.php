@@ -6,6 +6,8 @@ use App\Models\Department;
 use App\Models\Employee;
 use App\Repositories\Employee\EmployeeRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class EmployeeService
@@ -38,7 +40,18 @@ class EmployeeService
         $payload['employee_code'] = $this->generateNextEmployeeCode();
         $this->validateBusinessRules($payload);
 
-        return $this->employeeRepository->create($payload);
+        $employee = $this->employeeRepository->create($payload);
+
+        Log::channel('ems')->info('Employee created', [
+            'event' => 'employee.created',
+            'employee_id' => $employee->id,
+            'user_id' => $employee->user_id,
+            'department_id' => $employee->department_id,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
+        ]);
+
+        return $employee;
     }
 
     /**
@@ -48,7 +61,18 @@ class EmployeeService
     {
         $this->validateBusinessRules($data, $employee->id);
 
-        return $this->employeeRepository->update($employee, $data);
+        $updatedEmployee = $this->employeeRepository->update($employee, $data);
+
+        Log::channel('ems')->info('Employee updated', [
+            'event' => 'employee.updated',
+            'employee_id' => $updatedEmployee->id,
+            'user_id' => $updatedEmployee->user_id,
+            'department_id' => $updatedEmployee->department_id,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
+        ]);
+
+        return $updatedEmployee;
     }
 
     public function deleteEmployee(Employee $employee): void

@@ -7,6 +7,8 @@ use App\Models\Employee;
 use App\Repositories\Attendance\AttendanceRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class AttendanceService
@@ -30,13 +32,23 @@ class AttendanceService
 
         $now = Carbon::now();
 
-        return $this->attendanceRepository->create([
+        $attendance = $this->attendanceRepository->create([
             'employee_id' => $employeeId,
             'attendance_date' => $now->toDateString(),
             'check_in_time' => $now,
             'status' => $this->resolveInitialStatus($now),
             'notes' => $data['notes'] ?? null,
         ]);
+
+        Log::channel('ems')->info('Attendance check-in', [
+            'event' => 'attendance.check_in',
+            'attendance_id' => $attendance->id,
+            'employee_id' => $attendance->employee_id,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
+        ]);
+
+        return $attendance;
     }
 
     /**
@@ -72,7 +84,17 @@ class AttendanceService
             $payload['status'] = $data['status'];
         }
 
-        return $this->attendanceRepository->update($attendance, $payload);
+        $updatedAttendance = $this->attendanceRepository->update($attendance, $payload);
+
+        Log::channel('ems')->info('Attendance check-out', [
+            'event' => 'attendance.check_out',
+            'attendance_id' => $updatedAttendance->id,
+            'employee_id' => $updatedAttendance->employee_id,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
+        ]);
+
+        return $updatedAttendance;
     }
 
     /**

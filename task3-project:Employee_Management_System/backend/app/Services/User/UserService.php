@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Repositories\User\UserRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class UserService
@@ -41,7 +43,17 @@ class UserService
         $payload = $data;
         $payload['password'] = Hash::make((string) $data['password']);
 
-        return $this->userRepository->create($payload);
+        $createdUser = $this->userRepository->create($payload);
+
+        Log::channel('ems')->info('User created', [
+            'event' => 'user.created',
+            'user_id' => $createdUser->id,
+            'email' => $createdUser->email,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
+        ]);
+
+        return $createdUser;
     }
 
     /**
@@ -59,7 +71,17 @@ class UserService
             unset($payload['password']);
         }
 
-        return $this->userRepository->update($user, $payload);
+        $updatedUser = $this->userRepository->update($user, $payload);
+
+        Log::channel('ems')->info('User updated', [
+            'event' => 'user.updated',
+            'user_id' => $updatedUser->id,
+            'email' => $updatedUser->email,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
+        ]);
+
+        return $updatedUser;
     }
 
     public function deleteUser(User $targetUser, User $authenticatedUser): void
@@ -71,6 +93,14 @@ class UserService
         }
 
         $this->userRepository->delete($targetUser);
+
+        Log::channel('ems')->info('User deleted', [
+            'event' => 'user.deleted',
+            'user_id' => $targetUser->id,
+            'email' => $targetUser->email,
+            'performed_by' => $authenticatedUser->id,
+            'ip' => request()?->ip(),
+        ]);
     }
 
     /**

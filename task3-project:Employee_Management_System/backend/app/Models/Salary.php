@@ -20,10 +20,20 @@ class Salary extends Model
         'amount',
         'bonuses',
         'deductions',
-        'net_salary',
         'effective_date',
         'notes',
     ];
+
+    protected $appends = [
+        'net_salary',
+    ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (Salary $salary): void {
+            $salary->setAttribute('net_salary', $salary->calculateNetSalary());
+        });
+    }
 
     public function employee(): BelongsTo
     {
@@ -36,8 +46,21 @@ class Salary extends Model
             'amount' => 'decimal:2',
             'bonuses' => 'decimal:2',
             'deductions' => 'decimal:2',
-            'net_salary' => 'decimal:2',
             'effective_date' => 'date',
         ];
+    }
+
+    public function getNetSalaryAttribute(): float
+    {
+        return round($this->calculateNetSalary(), 2);
+    }
+
+    private function calculateNetSalary(): float
+    {
+        $amount = is_numeric($this->amount) ? (float) $this->amount : 0.0;
+        $bonuses = is_numeric($this->bonuses) ? (float) $this->bonuses : 0.0;
+        $deductions = is_numeric($this->deductions) ? (float) $this->deductions : 0.0;
+
+        return $amount + $bonuses - $deductions;
     }
 }

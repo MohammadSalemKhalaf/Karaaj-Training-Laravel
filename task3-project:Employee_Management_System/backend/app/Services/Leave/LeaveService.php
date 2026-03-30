@@ -6,6 +6,7 @@ use App\Models\LeaveRequest as LeaveRequestModel;
 use App\Repositories\Leave\LeaveRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
@@ -42,7 +43,17 @@ class LeaveService
             (string) $payload['end_date']
         );
 
-        return $this->leaveRepository->create($payload);
+        $leave = $this->leaveRepository->create($payload);
+
+        Log::channel('ems')->info('Leave applied', [
+            'event' => 'leave.applied',
+            'leave_id' => $leave->id,
+            'employee_id' => $leave->employee_id,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
+        ]);
+
+        return $leave;
     }
 
     /**
@@ -73,10 +84,13 @@ class LeaveService
             'rejection_reason' => null,
         ]);
 
-        Log::info('Leave approved', [
+        Log::channel('ems')->info('Leave approved', [
+            'event' => 'leave.approved',
             'leave_id' => $updated->id,
             'approved_by' => $approvedBy,
             'employee_id' => $updated->employee_id,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
         ]);
 
         return $updated;
@@ -86,20 +100,41 @@ class LeaveService
     {
         $this->ensurePending($leave, 'rejected');
 
-        return $this->leaveRepository->update($leave, [
+        $updated = $this->leaveRepository->update($leave, [
             'status' => 'rejected',
             'approved_by' => $approvedBy,
             'rejection_reason' => $reason,
         ]);
+
+        Log::channel('ems')->info('Leave rejected', [
+            'event' => 'leave.rejected',
+            'leave_id' => $updated->id,
+            'approved_by' => $approvedBy,
+            'employee_id' => $updated->employee_id,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
+        ]);
+
+        return $updated;
     }
 
     public function cancelLeave(LeaveRequestModel $leave): LeaveRequestModel
     {
         $this->ensurePending($leave, 'cancelled');
 
-        return $this->leaveRepository->update($leave, [
+        $updated = $this->leaveRepository->update($leave, [
             'status' => 'cancelled',
         ]);
+
+        Log::channel('ems')->info('Leave cancelled', [
+            'event' => 'leave.cancelled',
+            'leave_id' => $updated->id,
+            'employee_id' => $updated->employee_id,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
+        ]);
+
+        return $updated;
     }
 
     /**

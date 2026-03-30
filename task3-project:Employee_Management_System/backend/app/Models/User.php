@@ -34,6 +34,10 @@ class User extends Authenticatable implements JWTSubject
         'password',
     ];
 
+    protected $appends = [
+        'is_active',
+    ];
+
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
@@ -68,5 +72,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [];
+    }
+
+    public function getIsActiveAttribute(): bool
+    {
+        return strtolower((string) $this->status) === 'active';
     }
 }

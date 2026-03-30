@@ -6,6 +6,8 @@ use App\Models\Employee;
 use App\Models\Salary;
 use App\Repositories\Salary\SalaryRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class SalaryService
@@ -38,7 +40,18 @@ class SalaryService
 
         $payload = $this->buildSalaryPayload($data);
 
-        return $this->salaryRepository->create($payload);
+        $salary = $this->salaryRepository->create($payload);
+
+        Log::channel('ems')->info('Salary created', [
+            'event' => 'salary.created',
+            'salary_id' => $salary->id,
+            'employee_id' => $salary->employee_id,
+            'amount' => $salary->amount,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
+        ]);
+
+        return $salary;
     }
 
     /**
@@ -50,7 +63,18 @@ class SalaryService
 
         $payload = $this->buildSalaryPayload($data);
 
-        return $this->salaryRepository->update($salary, $payload);
+        $updatedSalary = $this->salaryRepository->update($salary, $payload);
+
+        Log::channel('ems')->info('Salary updated', [
+            'event' => 'salary.updated',
+            'salary_id' => $updatedSalary->id,
+            'employee_id' => $updatedSalary->employee_id,
+            'amount' => $updatedSalary->amount,
+            'performed_by' => Auth::id(),
+            'ip' => request()?->ip(),
+        ]);
+
+        return $updatedSalary;
     }
 
     public function deleteSalary(Salary $salary): void
@@ -90,7 +114,6 @@ class SalaryService
             'amount' => $amount,
             'bonuses' => $bonuses,
             'deductions' => $deductions,
-            'net_salary' => $netSalary,
             'effective_date' => $data['effective_date'],
             'notes' => $data['notes'] ?? null,
         ];

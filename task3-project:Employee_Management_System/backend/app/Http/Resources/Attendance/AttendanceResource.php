@@ -22,6 +22,7 @@ class AttendanceResource extends JsonResource
             'attendance_date' => $this->attendance_date,
             'check_in_time' => $this->check_in_time,
             'check_out_time' => $this->check_out_time,
+            'worked_hours' => $this->worked_hours,
             'status' => $this->status,
         ];
     }

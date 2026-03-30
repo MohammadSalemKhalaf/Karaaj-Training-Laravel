@@ -22,3 +22,17 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# AI agent and local workspace artifacts
+.claude/
+.github/copilot-instructions.md
+.github/skills/
+.vscode/
+AGENTS.md
+AI_BEHAVIOR.md
+ARCHITECTURE.md
+DEV_WORKFLOW.md
+DTO_RULES.md
+POSTMAN_RULES.md
+PROJECT_CONTEXT.md
+AUTH_RULES.md

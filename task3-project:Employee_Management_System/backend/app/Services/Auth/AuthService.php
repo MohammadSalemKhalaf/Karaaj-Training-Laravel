@@ -33,9 +33,12 @@ class AuthService
 
         $freshUser = $this->authRepository->findUserById($user->id) ?? $user;
 
-        Log::info('User registration completed', [
+        Log::channel('ems')->info('User registration completed', [
+            'event' => 'auth.registered',
             'user_id' => $freshUser->id,
             'email' => $freshUser->email,
+            'performed_by' => $freshUser->id,
+            'ip' => request()?->ip(),
         ]);
 
         return [
@@ -63,7 +66,13 @@ class AuthService
         $user->forceFill(['last_login_at' => now()])->save();
         $user->loadMissing('role');
 
-        Log::info('We are logged in to the EMS OSP');
+        Log::channel('ems')->info('We are logged in to the EMS OSP', [
+            'event' => 'auth.login.success',
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'performed_by' => $user->id,
+            'ip' => request()?->ip(),
+        ]);
 
         return $this->buildAuthPayload($user, $token);
     }
@@ -78,9 +87,12 @@ class AuthService
 
         $guard->logout();
 
-        Log::info('User logout completed', [
+        Log::channel('ems')->info('User logout completed', [
+            'event' => 'auth.logout',
             'user_id' => $user->id,
             'email' => $user->email,
+            'performed_by' => $user->id,
+            'ip' => request()?->ip(),
         ]);
     }
 
