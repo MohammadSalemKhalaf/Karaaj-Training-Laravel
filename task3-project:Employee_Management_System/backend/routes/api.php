@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Attendance\AttendanceController;
 use App\Http\Controllers\Api\Department\DepartmentController;
 use App\Http\Controllers\Api\Employee\EmployeeController;
+use App\Http\Controllers\Api\JobApplication\JobApplicationController;
+use App\Http\Controllers\Api\JobVacancy\JobVacancyController;
 use App\Http\Controllers\Api\Leave\LeaveController;
 use App\Http\Controllers\Api\Report\ReportController;
 use App\Http\Controllers\Api\Salary\SalaryController;
@@ -82,6 +84,38 @@ Route::middleware('auth:api')->prefix('attendance')->group(function (): void {
 Route::middleware('auth:api')
     ->get('/employees/{id}/attendance', [AttendanceController::class, 'employeeAttendance'])
     ->whereUuid('id');
+
+// Public job vacancy routes (anyone authenticated can browse)
+Route::middleware('auth:api')->prefix('job-vacancies')->group(function (): void {
+    Route::get('/', [JobVacancyController::class, 'index']);
+    Route::get('/{id}', [JobVacancyController::class, 'show'])->whereUuid('id');
+});
+
+// Candidate apply endpoint
+Route::middleware('auth:api')
+    ->post('/job-vacancies/{id}/apply', [JobApplicationController::class, 'apply'])
+    ->whereUuid('id');
+
+// Admin/Manager job vacancy management
+Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])->prefix('job-vacancies')->group(function (): void {
+    Route::post('/', [JobVacancyController::class, 'store']);
+    Route::put('/{id}', [JobVacancyController::class, 'update'])->whereUuid('id');
+    Route::delete('/{id}', [JobVacancyController::class, 'destroy'])->whereUuid('id');
+});
+
+// Admin/Manager applications review
+Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])->prefix('job-applications')->group(function (): void {
+    Route::get('/', [JobApplicationController::class, 'index']);
+    Route::get('/ranked', [JobApplicationController::class, 'rankedApplications']);
+    Route::get('/top-candidates', [JobApplicationController::class, 'topCandidates']);
+    Route::get('/low-score', [JobApplicationController::class, 'lowScoreCandidates']);
+    Route::post('/{id}/approve', [JobApplicationController::class, 'approve'])->whereUuid('id');
+});
+
+// Recruiter dashboard
+Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])->prefix('recruitment')->group(function (): void {
+    Route::get('/dashboard', [JobApplicationController::class, 'dashboard']);
+});
 
 Route::middleware(['auth:api', EnsureAdminOrManagerRole::class])->prefix('reports')->group(function (): void {
     Route::get('/employees/summary', [ReportController::class, 'employeeSummary']);
