@@ -20,8 +20,8 @@ class Resume extends Model
 
     protected $fillable = [
         'filename',
-        'fileUrl',
-        'contactDetails',
+        'file_url',
+        'contact_details',
         'education',
         'summary',
         'skills',

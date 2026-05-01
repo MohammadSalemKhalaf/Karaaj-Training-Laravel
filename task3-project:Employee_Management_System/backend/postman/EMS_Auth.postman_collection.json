@@ -4,6 +4,36 @@
     "description": "JWT authentication endpoints for EMS.\n\nIncludes request bodies, required headers, and sample responses.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const requestName = pm.info.requestName || '';",
+          "let payload = {};",
+          "try { payload = pm.response.json(); } catch (error) { payload = {}; }",
+          "const store = (key, value) => { if (value !== undefined && value !== null && value !== '') { pm.environment.set(key, String(value)); } };",
+          "const first = (items) => Array.isArray(items) && items.length > 0 ? items[0] : null;",
+          "if (requestName === 'Login' && payload?.data?.token) { store('access_token', payload.data.token); }",
+          "if (requestName === 'List Users') {",
+          "  const users = payload?.data?.users ?? [];",
+          "  const employeeRoleUser = users.find((user) => user?.role?.name === 'employee');",
+          "  const firstUser = first(users);",
+          "  if (employeeRoleUser?.id) { store('user_id', employeeRoleUser.id); } else if (firstUser?.id) { store('user_id', firstUser.id); }",
+          "  const managerUser = users.find((user) => user?.role?.name === 'manager');",
+          "  if (managerUser?.id) { store('manager_user_id', managerUser.id); }",
+          "  if (employeeRoleUser?.role?.id) { store('role_employee_id', employeeRoleUser.role.id); }",
+          "}",
+          "if (requestName === 'List Departments') { const departments = payload?.data?.departments ?? []; const firstDepartment = first(departments); if (firstDepartment?.id) { store('department_id', firstDepartment.id); } }",
+          "if (requestName === 'List Employees') { const employees = payload?.data?.employees ?? []; const firstEmployee = first(employees); if (firstEmployee?.id) { store('employee_id', firstEmployee.id); } }",
+          "if (requestName === 'List Salaries') { const salaries = payload?.data?.salaries ?? []; const firstSalary = first(salaries); if (firstSalary?.id) { store('salary_id', firstSalary.id); } }",
+          "if (requestName === 'List Leaves') { const leaves = payload?.data?.leaves ?? []; const firstLeave = first(leaves); if (firstLeave?.id) { store('leave_id', firstLeave.id); } }",
+          "if (requestName === 'List Attendance') { const attendance = payload?.data?.attendance ?? []; const firstAttendance = first(attendance); if (firstAttendance?.id) { store('attendance_id', firstAttendance.id); } }"
+        ]
+      }
+    }
+  ],
   "item": [
     {
       "name": "Auth",
@@ -464,6 +494,198 @@
       ]
     },
     {
+      "name": "Departments",
+      "item": [
+        {
+          "name": "List Departments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/departments?search=&status=&page=1&per_page=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "departments"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "List departments with search, status filter and pagination."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Departments fetched successfully.\",\n  \"data\": {\n    \"departments\": [\n      {\n        \"id\": \"uuid\",\n        \"name\": \"Engineering\",\n        \"code\": \"ENG\",\n        \"status\": \"active\",\n        \"manager\": null,\n        \"employees_count\": 0,\n        \"created_at\": \"2026-03-25T00:00:00.000000Z\"\n      }\n    ]\n  },\n  \"meta\": {\n    \"current_page\": 1,\n    \"last_page\": 1,\n    \"per_page\": 10,\n    \"total\": 1\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Show Department",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/departments/{{department_id}}?employees_per_page=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "departments",
+                "{{department_id}}"
+              ],
+              "query": [
+                {
+                  "key": "employees_per_page",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Show department details with paginated employees list."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Department",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/departments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "departments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Technology\",\n  \"code\": \"TECH\",\n  \"description\": \"Technology group\",\n  \"manager_user_id\": \"{{manager_user_id}}\",\n  \"status\": \"active\"\n}"
+            },
+            "description": "Create a department with optional manager assignment."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Department",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/departments/{{department_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "departments",
+                "{{department_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Technology Updated\",\n  \"code\": \"TECH-UPD\",\n  \"description\": \"Updated technology group\",\n  \"manager_user_id\": \"{{manager_user_id}}\",\n  \"status\": \"inactive\"\n}"
+            },
+            "description": "Update department details and manager assignment."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Department",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/departments/{{department_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "departments",
+                "{{department_id}}"
+              ]
+            },
+            "description": "Delete department by UUID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Employees",
       "item": [
         {
@@ -652,198 +874,6 @@
               ]
             },
             "description": "Delete an employee."
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Departments",
-      "item": [
-        {
-          "name": "List Departments",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/departments?search=&status=&page=1&per_page=10",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "departments"
-              ],
-              "query": [
-                {
-                  "key": "search",
-                  "value": ""
-                },
-                {
-                  "key": "status",
-                  "value": ""
-                },
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "per_page",
-                  "value": "10"
-                }
-              ]
-            },
-            "description": "List departments with search, status filter and pagination."
-          },
-          "response": [
-            {
-              "name": "200 OK",
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Departments fetched successfully.\",\n  \"data\": {\n    \"departments\": [\n      {\n        \"id\": \"uuid\",\n        \"name\": \"Engineering\",\n        \"code\": \"ENG\",\n        \"status\": \"active\",\n        \"manager\": null,\n        \"employees_count\": 0,\n        \"created_at\": \"2026-03-25T00:00:00.000000Z\"\n      }\n    ]\n  },\n  \"meta\": {\n    \"current_page\": 1,\n    \"last_page\": 1,\n    \"per_page\": 10,\n    \"total\": 1\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "Show Department",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/departments/{{department_id}}?employees_per_page=10",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "departments",
-                "{{department_id}}"
-              ],
-              "query": [
-                {
-                  "key": "employees_per_page",
-                  "value": "10"
-                }
-              ]
-            },
-            "description": "Show department details with paginated employees list."
-          },
-          "response": []
-        },
-        {
-          "name": "Create Department",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/departments",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "departments"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Technology\",\n  \"code\": \"TECH\",\n  \"description\": \"Technology group\",\n  \"manager_user_id\": \"{{manager_user_id}}\",\n  \"status\": \"active\"\n}"
-            },
-            "description": "Create a department with optional manager assignment."
-          },
-          "response": []
-        },
-        {
-          "name": "Update Department",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/departments/{{department_id}}",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "departments",
-                "{{department_id}}"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Technology Updated\",\n  \"code\": \"TECH-UPD\",\n  \"description\": \"Updated technology group\",\n  \"manager_user_id\": \"{{manager_user_id}}\",\n  \"status\": \"inactive\"\n}"
-            },
-            "description": "Update department details and manager assignment."
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Department",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/departments/{{department_id}}",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "departments",
-                "{{department_id}}"
-              ]
-            },
-            "description": "Delete department by UUID."
           },
           "response": []
         }

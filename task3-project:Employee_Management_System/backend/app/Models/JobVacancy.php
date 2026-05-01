@@ -24,7 +24,7 @@ class JobVacancy extends Model
         'location',
         'salary',
         'type',
-        'viewCount',
+        'view_count',
         'category_id',
         'company_id'
     ];

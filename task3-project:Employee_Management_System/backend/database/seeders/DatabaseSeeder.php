@@ -16,35 +16,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(DepartmentSeeder::class);
-
-        $adminRole = Role::query()->firstOrCreate(
-            ['name' => 'admin'],
-            ['description' => 'Platform administrator role.']
-        );
-
-        Role::query()->firstOrCreate(
-            ['name' => 'manager'],
-            ['description' => 'Department manager role.']
-        );
-
-        $employeeRole = Role::query()->firstOrCreate(
-            ['name' => 'employee'],
-            ['description' => 'Employee role.']
-        );
-
-        User::factory()->create([
-            'role_id' => $adminRole->id,
-            'name' => 'admin',
-            'email' => 'admin@gmail.com',
-            'password' => '12345678',
-        ]);
-
-        User::factory()->create([
-            'role_id' => $employeeRole->id,
-            'name' => 'Employee User',
-            'email' => 'employee@example.com',
-            'password' => '12345678',
+        // Call all seeders in order
+        $this->call([
+            DepartmentSeeder::class,
+            RoleSeeder::class,
+            UserSeeder::class,
+            CompanySeeder::class,
+            JobCategorySeeder::class,
+            JobVacancySeeder::class,
+            ResumeSeeder::class,
+            JobApplicationSeeder::class,
+            EmployeeSeeder::class,
+            OperationalDataSeeder::class,
         ]);
     }
 }

@@ -99,7 +99,7 @@ it('calculates net salary correctly', function (): void {
         'Authorization' => 'Bearer '.authTokenFor($manager),
     ])
         ->assertCreated()
-        ->assertJsonPath('data.salary.net_salary', '1150.00');
+        ->assertJsonPath('data.salary.net_salary', 1150);
 });
 
 it('supports multiple salary records per employee', function (): void {
